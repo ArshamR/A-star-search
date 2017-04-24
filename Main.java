@@ -13,18 +13,24 @@ public class Main {
 	final static String COFFEE = "C";
 	
 	public static void main(String[] args) {
-		int numRows = 3;
-		int numColumns = 4;
+		
+		
+		//Test case 
+		int numRows = 5;
+		int numColumns = 6;
 		Tuple<Integer, Integer> desk = new Tuple<>(1,0);
 		List<Tuple<Integer,Integer>> coffeeLocations = new ArrayList<>();
 		List<Tuple<Integer,Integer>> walls = new ArrayList<>();
 		
-		coffeeLocations.add(new Tuple<>(0,2));
+		coffeeLocations.add(new Tuple<>(4,0));
 		coffeeLocations.add(new Tuple<>(2,1));
+		coffeeLocations.add(new Tuple<>(2,4));
+
 		
 		walls.add(new Tuple<>(1,1));
 		walls.add(new Tuple<>(1,2));
 		walls.add(new Tuple<>(2,0));
+		walls.add(new Tuple<>(2,2));
 		
 		System.out.println(DistanceToCoffee(numRows,numColumns,desk,coffeeLocations,walls));
 	}
@@ -36,13 +42,22 @@ public class Main {
 	{
 		int min = Integer.MAX_VALUE;
 		OfficeTile[][] office = initOffice(numRows,numColumns, walls, coffeeLocations);
-		office = setHeuristic(office,coffeeLocations.get(0));
+		
+		for(int i=0;i<office.length;i++){
+			for(int j=0;j<office[0].length;j++){
+				System.out.print(office[i][j].getType() + " ");
+			}
+			System.out.println();
+		}
 		
 		//For each coffee machine find the shortest path
 		for(Tuple<Integer,Integer> e : coffeeLocations){
 			int dstX = (int) e.getX();
 			int dstY = (int) e.getY();
 			boolean found = false;
+			
+			//Calculate the heuristic values for each coffee machine
+			office = setHeuristic(office,e);
 			
 			//Stores the unexplored nodes and sorts them based on their f values
 			PriorityQueue<OfficeTile> frontier = new PriorityQueue<OfficeTile>(1,new Comparator<OfficeTile>(){
